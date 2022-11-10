@@ -30,9 +30,17 @@ const removeName = () => {
 }
 .card p {
   position: absolute;
-  top: -29%;
-  left: 92.5%;
+  top: -10%;
+  left: 88.5%;
+  height: 17px;
+  font-size: 14px;
+  width: 17px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 50%;
   cursor: pointer;
   color: rgba(255, 255, 255, 0.178);
+  background: #36549a;
 }
 </style>
