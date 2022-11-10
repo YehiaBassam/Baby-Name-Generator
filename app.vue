@@ -1,17 +1,19 @@
 <script setup lang="ts">
+import { names } from './names';
+
 const items = ref([
   {
     title: "1) Choose a gender",
     options: [
-      { label: "Boy", active: false },
-      { label: "Girl", active: true },
+      { label: "Boy", active: true },
+      { label: "Girl", active: false },
     ],
   },
   {
     title: "2) Choose the name's popularity",
     options: [
-      { label: "Trendy", active: true },
-      { label: "Unique", active: false },
+      { label: "Trendy", active: false },
+      { label: "Unique", active: true },
     ],
   },
   {
@@ -24,7 +26,7 @@ const items = ref([
   },
 ]);
 
-function borderStyle(index: number, options: Array) {
+function borderStyle (index: number, options: Array) {
   let classStytle;
   if (index == 2) 
     classStytle = "option-right";
@@ -38,12 +40,45 @@ function borderStyle(index: number, options: Array) {
   return classStytle;
 }
 
-const setActiveClass = (clickedOption: Object, options: Array) => {
+// set active class
+const setActiveClass = (clickedOption: Object, options: Object[]) => {
   for (const option of options) {
     option.active = false;
   }
   clickedOption.active = true;
+
+  selectOptions();
 };
+
+// selected options
+let selectedOptions = reactive <object[]> ([]);
+function selectOptions(){
+  selectedOptions = [];
+  items.value.forEach((item) => {
+    item.options.forEach((type) => {
+      type.active ? selectedOptions.push(type.label) : null;
+    })
+  })
+};
+
+// selected names
+const selectedNames = ref <object[]> ([]);
+const selectNames = () => {
+  const filteredNames = names
+  .filter( item => item.gender == selectedOptions[0])
+  .filter( item => item.popularity == selectedOptions[1])
+  .filter( item => {
+      if ( selectedOptions[2] === "All") return true;
+      else return item.length === selectedOptions[2];
+    });
+    
+  selectedNames.value = filteredNames.map((item) => item.name);
+};
+
+onMounted(() => {
+  selectOptions();
+})
+
 </script>
 
 <template>
@@ -68,6 +103,11 @@ const setActiveClass = (clickedOption: Object, options: Array) => {
             {{ option.label }}
           </button>
         </div>
+      </div>
+      <button class="primary" @click="selectNames">Find names</button>
+
+      <div>
+        {{ selectedNames }}
       </div>
     </div>
   </div>
@@ -117,5 +157,15 @@ h1 {
 .option-active {
   background-color: rgb(249, 87, 89);
   color: white;
+}
+.primary {
+  background-color: rgb(249, 87, 89);
+  color: white;
+  border-radius: 6.5rem;
+  border: none;
+  padding: 0.75rem 4rem;
+  font-size: 1rem;
+  margin-top: 1rem;
+  cursor: pointer;
 }
 </style>
